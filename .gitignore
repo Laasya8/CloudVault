@@ -1,0 +1,25 @@
+# Node dependencies
+node_modules/
+package-lock.json
+
+# Storage data directories & volume mounts
+storage-node/data/
+node-a-data/
+node-b-data/
+node-c-data/
+pgdata/
+
+# Environment files & local configs
+.env
+.env.local
+*.log
+
+# Temporary test outputs
+test.txt
+test-large.txt
+test-duplicate.txt
+downloaded_*.txt
+
+# Operating System files
+.DS_Store
+Thumbs.db

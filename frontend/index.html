@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudVault: Distributed Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="dashboard-container">
+    
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-area">
+        <div class="logo-glow"></div>
+        <svg class="logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.905 0-5.64-.78-8.006-2.141m16.012 0a9 9 0 00-16.012 0" />
+        </svg>
+        <div>
+          <h1>CloudVault</h1>
+          <p class="subtitle">Distributed Self-Healing Storage</p>
+        </div>
+      </div>
+      <div class="system-summary">
+        <div class="stat-badge">
+          <span class="label">Replication Factor</span>
+          <span class="val" id="replication-factor">N=2</span>
+        </div>
+        <div class="stat-badge">
+          <span class="label">Health Status</span>
+          <span class="val status-ok" id="system-health">HEALTHY</span>
+        </div>
+        <div class="user-badge" id="user-badge">
+          <span class="user-avatar" id="user-avatar">U</span>
+          <span class="user-name" id="user-name">User</span>
+          <button class="btn-logout" id="btn-logout" title="Sign Out">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H8.25" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top Grid: Global Statistics Dashboard -->
+    <section class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon-wrap bg-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+          </svg>
+        </div>
+        <div class="stat-details">
+          <h3>Total Files</h3>
+          <p id="stat-total-files">0</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon-wrap bg-purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        </div>
+        <div class="stat-details">
+          <h3>Unique Chunks</h3>
+          <p id="stat-unique-chunks">0</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap bg-amber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <div class="stat-details">
+          <h3>Space Saved</h3>
+          <p id="stat-space-saved">0%</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap bg-green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <div class="stat-details">
+          <h3>Online Nodes</h3>
+          <p id="stat-online-nodes">3 / 3</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Grid Content -->
+    <main class="main-grid">
+      
+      <!-- Left Column: Storage Nodes Configuration -->
+      <section class="grid-col-left">
+        <div class="panel-header">
+          <h2>Cluster Node Registry</h2>
+          <span class="pulse-indicator"></span>
+        </div>
+        <div class="nodes-list" id="nodes-container">
+          <!-- Node Cards injected dynamically -->
+          <div class="loading-placeholder">Loading node states...</div>
+        </div>
+      </section>
+
+      <!-- Right Column: File Upload & Registry -->
+      <section class="grid-col-right">
+        
+        <!-- Upload Section -->
+        <div class="glass-panel upload-panel">
+          <div class="panel-header">
+            <h2>Upload Payload</h2>
+          </div>
+          <div class="drop-zone" id="drop-zone">
+            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+            </svg>
+            <p class="drag-text">Drag and drop file here, or <span class="browse-btn">browse</span></p>
+            <p class="limit-text">Standard chunks are size-sliced at 1MB</p>
+            <input type="file" id="file-input" style="display: none;">
+          </div>
+          <div class="upload-progress-bar" id="upload-progress-wrapper" style="display: none;">
+            <div class="progress-info">
+              <span id="upload-filename">file.txt</span>
+              <span id="upload-percentage">0%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="upload-progress-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- File Registry list -->
+        <div class="glass-panel registry-panel">
+          <div class="panel-header" style="flex-wrap: wrap; gap: 0.75rem;">
+            <div class="panel-title-group">
+              <h2>File & Folder Registry</h2>
+              <div class="view-mode-tabs" style="display: flex; background: rgba(0,0,0,0.2); padding: 3px; border-radius: 8px; border: 1px solid var(--border-glass);">
+                <button class="view-tab active" id="tab-my-storage" style="padding: 0.25rem 0.6rem; font-size: 0.75rem; border: none; background: rgba(56, 189, 248, 0.2); color: #38bdf8; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: 500;">My Storage</button>
+                <button class="view-tab" id="tab-shared-with-me" style="padding: 0.25rem 0.6rem; font-size: 0.75rem; border: none; background: transparent; color: var(--text-secondary); border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: 500;">Shared with Me</button>
+              </div>
+              <button class="btn-new-folder" id="btn-new-folder" title="Create New Folder">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                New Folder
+              </button>
+            </div>
+            <div class="legend-container">
+              <span class="legend-item"><span class="node-indicator node-a"></span> Node A</span>
+              <span class="legend-item"><span class="node-indicator node-b"></span> Node B</span>
+              <span class="legend-item"><span class="node-indicator node-c"></span> Node C</span>
+            </div>
+            <span class="file-count-badge" id="file-count-badge">0 Files</span>
+          </div>
+
+          <!-- Breadcrumb navigation -->
+          <div class="breadcrumb-container" id="breadcrumb-container">
+            <span class="breadcrumb-item active" data-folder-id="root">Root Storage</span>
+          </div>
+          
+          <div class="table-container">
+            <table class="files-table">
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Mime Type</th>
+                  <th>Size</th>
+                  <th>Replica Chunks Mapping</th>
+                  <th class="actions-col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="files-list-container">
+                <tr>
+                  <td colspan="5" class="empty-state">No files stored in CloudVault cluster yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- JSON Inspector Modal -->
+  <div class="modal" id="json-modal" style="display: none;">
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>File Metadata Manifest (JSON)</h3>
+        <button class="btn-close-modal" id="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="code-header">
+          <span class="file-path-badge" id="modal-file-id">file-id</span>
+          <button class="btn-copy" id="btn-copy-json">Copy JSON</button>
+        </div>
+        <pre><code id="json-renderer"></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Management Modal -->
+  <div class="modal" id="share-modal" style="display: none;">
+    <div class="modal-overlay" id="share-modal-overlay"></div>
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 id="share-modal-title">Manage Permissions & Sharing</h3>
+        <button class="btn-close-modal" id="close-share-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem;">
+        <div class="share-form-group">
+          <label style="display: block; font-size: 0.8rem; font-weight: 600; color: #94a3b8; margin-bottom: 0.4rem;">Share with User Email</label>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+            <input type="email" id="share-email-input" class="form-control" placeholder="user@example.com" style="flex: 1;">
+            <select id="share-perm-select" class="form-control" style="width: 110px;">
+              <option value="VIEWER">VIEWER</option>
+              <option value="EDITOR">EDITOR</option>
+            </select>
+            <button class="btn-submit" id="btn-do-share" style="width: auto; margin-top: 0; padding: 0.5rem 1rem;">Share</button>
+          </div>
+        </div>
+
+        <h4 style="font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin: 1rem 0 0.5rem 0;">Active Shares</h4>
+        <div id="shares-list-container" style="background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--border-glass); padding: 0.5rem; max-height: 200px; overflow-y: auto;">
+          <div style="color: var(--text-secondary); font-size: 0.8rem; text-align: center; padding: 0.5rem;">Loading shares...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Javascript -->
+  <script src="auth.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # Relational database for metadata management
+  db:
+    image: postgres:15-alpine
+    container_name: cloudvault-db
+    environment:
+      POSTGRES_USER: cloudvault_user
+      POSTGRES_PASSWORD: cloudvault_password
+      POSTGRES_DB: cloudvault_metadata
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # Backend Coordinator / API Gateway
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cloudvault-coordinator
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgres://cloudvault_user:cloudvault_password@db:5432/cloudvault_metadata
+      - STORAGE_NODES=node-a=http://node-a:5001,node-b=http://node-b:5002,node-c=http://node-c:5003
+      - CHUNK_SIZE=1048576 # 1 MB in bytes (change this to test small chunks)
+      - REPLICATION_FACTOR=2
+      - JWT_SECRET=cloudvault-super-secret-key-production-change-me
+    depends_on:
+      - db
+      - node-a
+      - node-b
+      - node-c
+    volumes:
+      - ./frontend:/app/frontend:ro
+    restart: unless-stopped
+
+  # Storage Node A
+  node-a:
+    build:
+      context: ./storage-node
+      dockerfile: Dockerfile
+    container_name: cloudvault-node-a
+    environment:
+      - PORT=5001
+      - STORAGE_DIR=/app/data
+    volumes:
+      - node-a-data:/app/data
+    restart: unless-stopped
+
+  # Storage Node B
+  node-b:
+    build:
+      context: ./storage-node
+      dockerfile: Dockerfile
+    container_name: cloudvault-node-b
+    environment:
+      - PORT=5002
+      - STORAGE_DIR=/app/data
+    volumes:
+      - node-b-data:/app/data
+    restart: unless-stopped
+
+  # Storage Node C
+  node-c:
+    build:
+      context: ./storage-node
+      dockerfile: Dockerfile
+    environment:
+      - PORT=5003
+      - STORAGE_DIR=/app/data
+    volumes:
+      - node-c-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  node-a-data:
+  node-b-data:
+  node-c-data:

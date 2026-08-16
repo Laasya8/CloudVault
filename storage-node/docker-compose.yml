@@ -1,0 +1,2 @@
+# REDUNDANT: Please use the main docker-compose.yml at the project root directory.
+# Running the root compose starts the entire distributed network (PostgreSQL, Coordinator backend, Node A, B, and C).
