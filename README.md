@@ -17,7 +17,7 @@ CloudVault/
 └── storage-node/                 # Storage node server (Express file receiver)
 ```
 
-For a deep dive into the system design, read the [Phase 0 Architecture Guide](file:///f:/data/Laasya/Antigravity-projects/CloudVault/docs/phase-0-architecture.md).
+For a deep dive into the system design, read the [Phase- 0 Architecture Guide](file:///f:/data/Laasya/Antigravity-projects/CloudVault/docs/phase-0-architecture.md).
 
 ---
 
